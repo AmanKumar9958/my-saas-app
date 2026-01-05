@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import { RxHamburgerMenu } from "react-icons/rx";
 import { RxCross1 } from "react-icons/rx";import { motion, AnimatePresence } from "motion/react";
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
@@ -86,8 +87,25 @@ const Navbar = () => {
                 </div>
                 {/* Buttons */}
                 <div className='hidden md:flex'>
-                    <button className='mx-2 px-4 py-2 bg-[#02DF82] text-[#063128] font-bold hover:bg-[#063128] hover:text-[#02DF82] rounded-4xl transition-all duration-200 hover:cursor-pointer'>Login</button>
-                    <button className='mx-2 px-4 py-2 text-[#02DF82] rounded-4xl font-bold hover:bg-[#02df82] hover:text-[#063128] transition-all duration-200 hover:cursor-pointer'>Sign Up</button>
+                    {/* Show this if user is NOT logged in */}
+                    <SignedOut>
+                        <SignInButton mode="modal">
+                            <button className="bg-(--text-color) hover:bg-[#0B3A1E] hover:cursor-pointer text-black hover:text-white transition-all duration-200 px-4 py-2 rounded-full font-bold">
+                            Sign In
+                            </button>
+                        </SignInButton>
+                    </SignedOut>
+
+                    {/* Show this if user IS logged in */}
+                    <SignedIn>
+                        <div className='flex items-center space-x-4'>
+                            <Link href="/dashboard" className="text-gray-300 hover:text-white">
+                                Dashboard
+                            </Link>
+                            {/* This is the circle avatar with logout dropdown */}
+                            <UserButton afterSignOutUrl="/" />
+                        </div>
+                    </SignedIn>
                 </div>
 
                 {/* hamburger icon */}
