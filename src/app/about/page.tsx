@@ -1,9 +1,12 @@
-"use client";
-
+import type { Metadata } from "next";
 import React from "react";
 import Image from "next/image";
 import { BackgroundRippleEffect } from '@/components/ui/background-ripple-effect';
 import { SpotlightCard } from "@/components/ui/spotlight-card";
+
+export const metadata: Metadata = {
+  title: "About",
+};
 
 const AboutPage = () => {
   return (

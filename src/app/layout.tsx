@@ -14,8 +14,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OmniTools",
-  description: "Get all your essential tools in one place with OmniTools - the ultimate web app for productivity and convenience.",
+  title: {
+    template: "OmniTools - %s",
+    default: "OmniTools",
+  },
+  description: "The Swiss Army Knife of the Web",
+  icons: {
+    icon: "/logo.png",
+  }
 };
 
 export default function RootLayout({
@@ -26,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full min-h-screen bg-[var(--bg-color)] text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full min-h-screen bg-(--bg-color) text-white`}
       >
         <Navbar />
         {children}

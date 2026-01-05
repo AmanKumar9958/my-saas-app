@@ -1,5 +1,6 @@
 "use client"
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -58,7 +59,8 @@ const Navbar = () => {
             <nav className={`bg-gray-900 h-14 flex items-center px-6 shadow-md rounded-3xl mx-auto mt-5 justify-between transition-all duration-500 ease-in-out ${isCompact ? 'w-11/12 md:w-112.5' : 'w-11/12'}`}>
                 {/* logo */}
                 <div>
-                    <h1 className='text-2xl font-bold text-(--text-color)'>OmniTools</h1>
+                    {/* <h1 className='text-2xl font-bold text-(--text-color)'>OmniTools</h1> */}
+                    <Image src="/logo.png" alt="OmniTools Logo" width={80} height={30} className='w-8' />
                 </div>
                 {/* desktop navigation links */}
                 <div className={`hidden md:flex relative items-center transition-all duration-300 ease-in-out ${isCompact ? 'w-0 opacity-0 overflow-hidden scale-95' : 'w-auto opacity-100 scale-100'}`}>
