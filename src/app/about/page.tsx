@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Image from "next/image"; // Ensure you have this imported
+import Image from "next/image";
 import { BackgroundRippleEffect } from '@/components/ui/background-ripple-effect';
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 
@@ -82,7 +82,13 @@ const AboutPage = () => {
              <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-gray-700 bg-black shadow-2xl mb-8 group">
                 <div className="absolute inset-0 flex items-center justify-center bg-neutral-900 text-gray-500">
                    {/* Placeholder for Image */}
-                   <span className="text-sm uppercase tracking-widest">Dashboard Preview / Workspace</span>
+                    <Image
+                      src="https://ai-saas-template-aceternity.vercel.app/_next/image?url=%2Fheader.png&w=3840&q=75"
+                      alt="Coding or Dashboard Screenshot"
+                      fill
+                      className="object-cover transform group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw"
+                    />
                 </div>
              </div>
 
