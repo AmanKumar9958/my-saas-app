@@ -81,7 +81,7 @@ const AllToolsPage = () => {
         
         {/* ----------------- HEADER SECTION ----------------- */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold bg-clip-text bg-gradient-to-b from-white to-gray-500 mb-6 text-(--text-color)">
+          <h1 className="text-4xl md:text-6xl font-bold bg-clip-text bg-linear-to-b from-white to-gray-500 mb-6 text-(--text-color)">
             All the tools you need. <br />
             <span className="text-white">One Subscription.</span>
           </h1>
@@ -104,7 +104,7 @@ const AllToolsPage = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             {/* Glow effect on search focus/hover */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#02D67D] to-blue-600 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200 -z-10"></div>
+            <div className="absolute -inset-0.5 bg-linear-to-r from-[#02D67D] to-blue-600 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200 -z-10"></div>
           </div>
         </div>
 
@@ -116,7 +116,7 @@ const AllToolsPage = () => {
                 
                 {/* Image Container with Hover Zoom Effect */}
                 <div className="relative w-full h-48 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent z-10 opacity-60" />
+                  <div className="absolute inset-0 bg-linear-to-t from-neutral-900 to-transparent z-10 opacity-60" />
                   <Image
                     src={tool.image}
                     alt={tool.title}
@@ -131,11 +131,11 @@ const AllToolsPage = () => {
                 </div>
 
                 {/* Content */}
-                <div className="p-6 flex flex-col flex-grow">
+                <div className="p-6 flex flex-col grow">
                   <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#02D67D] transition-colors">
                     {tool.title}
                   </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed flex-grow">
+                  <p className="text-gray-400 text-sm leading-relaxed grow">
                     {tool.description}
                   </p>
                   
@@ -160,7 +160,7 @@ const AllToolsPage = () => {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-white">No tools found</h3>
-            <p className="text-gray-500 mt-2">We couldn't find any tools matching "{searchQuery}".</p>
+            <p className="text-gray-500 mt-2">We couldn&apos;t find any tools matching "{searchQuery}".</p>
           </div>
         )}
 

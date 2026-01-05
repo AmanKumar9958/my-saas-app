@@ -54,7 +54,7 @@ const HomePage = () => {
                 image: "https://plus.unsplash.com/premium_photo-1669244777130-3f78aca168a7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fFVSTCUyMHNob3J0bmVyJTIwd2Vic2l0ZXxlbnwwfHwwfHx8MA%3D%3D"
               },
             ].map((feature, index) => (
-              <SpotlightCard key={index} className="p-6 bg-white/5 backdrop-blur-sm border border-neutral-200 rounded-2xl hover:border-[#02D67D]/50 transition-colors duration-300 hover:cursor-default flex flex-col hover:scale-105 transform transition-transform duration-300">
+              <SpotlightCard key={index} className="p-6 bg-white/5 backdrop-blur-sm border border-neutral-200 rounded-2xl hover:border-[#02D67D]/50 hover:cursor-default flex flex-col hover:scale-105 transform transition-transform duration-300">
                 <div className="relative w-full h-48 mb-6 rounded-xl overflow-hidden group">
                     <Image
                       src={feature.image}
@@ -96,7 +96,7 @@ const HomePage = () => {
         </div>
 
         {/* Testimonials Section */}
-         <div className="relative z-10 mt-32 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
+          <div className="relative z-10 mt-32 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
             <h3 className="text-3xl md:text-4xl font-bold mb-12 text-center text-(--text-color)">
                 What Users Say
             </h3>
@@ -106,7 +106,7 @@ const HomePage = () => {
                     { name: "Sarah Williams", role: "Marketing Manager", text: "The QR code generator is perfect for our campaigns. Highly recommended." }
                 ].map((testimonial, i) => (
                     <div key={i} className="p-8 bg-white/5 rounded-2xl border border-white/10">
-                        <p className="text-gray-300 italic mb-6">"{testimonial.text}"</p>
+                        <p className="text-gray-300 italic mb-6">&quot;{testimonial.text}&quot;</p>
                         <div className="flex items-center">
                             <div className="w-10 h-10 rounded-full bg-linear-to-br from-[#02D67D] to-blue-500 mr-4"></div>
                             <div>

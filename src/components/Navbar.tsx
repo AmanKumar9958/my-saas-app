@@ -1,10 +1,9 @@
 "use client"
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { RxHamburgerMenu } from "react-icons/rx";
-import { RxCross1 } from "react-icons/rx";
-
+import { RxCross1 } from "react-icons/rx";import { motion, AnimatePresence } from "motion/react";
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
@@ -56,7 +55,7 @@ const Navbar = () => {
 
     return (
         <div className="fixed top-0 w-full z-50 transition-all duration-300">
-            <nav className={`bg-gray-900 h-14 flex items-center px-6 shadow-md rounded-3xl mx-auto mt-5 justify-between transition-all duration-500 ease-in-out ${isCompact ? 'w-11/12 md:w-[450px]' : 'w-11/12'}`}>
+            <nav className={`bg-gray-900 h-14 flex items-center px-6 shadow-md rounded-3xl mx-auto mt-5 justify-between transition-all duration-500 ease-in-out ${isCompact ? 'w-11/12 md:w-112.5' : 'w-11/12'}`}>
                 {/* logo */}
                 <div>
                     <h1 className='text-2xl font-bold text-(--text-color)'>OmniTools</h1>
@@ -91,10 +90,29 @@ const Navbar = () => {
 
                 {/* hamburger icon */}
                 <div className='block md:hidden'>
-                    <RxHamburgerMenu 
-                        className='text-(--text-color) hover:text-gray-900 transition-all duration-200 hover:cursor-pointer font-extrabold text-2xl'
-                        onClick={() => setIsOpen(!isOpen)}
-                    />
+                    <AnimatePresence mode="wait" initial={false}>
+                        {isOpen ? (
+                            <motion.div
+                                key="close"
+                                initial={{ opacity: 0, rotate: -90 }}
+                                animate={{ opacity: 1, rotate: 0 }}
+                                exit={{ opacity: 0, rotate: 90 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                <RxCross1 size={28} className='text-white hover:cursor-pointer' onClick={() => setIsOpen(false)} />
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="menu"
+                                initial={{ opacity: 0, rotate: 90 }}
+                                animate={{ opacity: 1, rotate: 0 }}
+                                exit={{ opacity: 0, rotate: -90 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                <RxHamburgerMenu size={28} className='text-white hover:cursor-pointer' onClick={() => setIsOpen(true)} />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
                 {/* mobile menu */}
