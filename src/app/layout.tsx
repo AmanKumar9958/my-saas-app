@@ -36,6 +36,7 @@ export default function RootLayout({
       <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased w-full min-h-screen bg-(--bg-color) text-white`}
+          suppressHydrationWarning
         >
           <Navbar />
           <LoaderOverlay />

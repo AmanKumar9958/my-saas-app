@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { BackgroundRippleEffect } from '@/components/ui/background-ripple-effect';
 import { SpotlightCard } from "@/components/ui/spotlight-card";
@@ -9,62 +8,234 @@ import { SpotlightCard } from "@/components/ui/spotlight-card";
 const ToolsContent = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
+  const renderToolCardPreview = (tool: { link: string; title: string }) => {
+    const wrap = (children: React.ReactNode) => (
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-linear-to-t from-neutral-900 to-transparent z-10 opacity-60" />
+        <div className="relative z-0 h-full w-full bg-black p-4">
+          <div className="h-full w-full rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm p-4">
+            {children}
+          </div>
+        </div>
+      </div>
+    );
+
+    const qrPreview = (
+      <div className="h-full w-full flex items-center gap-4">
+        <div className="min-w-0 flex-1">
+          <div className="text-xs font-semibold text-white/90 mb-2">QR Code Generator</div>
+          <div className="h-8 w-full rounded-lg bg-black/50 border border-gray-700" />
+          <div className="mt-3 h-2 w-2/3 rounded bg-white/10" />
+          <div className="mt-2 h-2 w-1/2 rounded bg-white/10" />
+          <div className="mt-4 h-9 w-32 rounded-lg bg-[#02D67D]" />
+        </div>
+
+        <div className="shrink-0">
+          <div className="h-24 w-24 rounded-xl bg-white p-2 shadow-lg">
+            <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden="true">
+              <rect width="100" height="100" fill="#ffffff" />
+              <g fill="#000000">
+                <rect x="6" y="6" width="26" height="26" />
+                <rect x="10" y="10" width="18" height="18" fill="#ffffff" />
+                <rect x="14" y="14" width="10" height="10" />
+
+                <rect x="68" y="6" width="26" height="26" />
+                <rect x="72" y="10" width="18" height="18" fill="#ffffff" />
+                <rect x="76" y="14" width="10" height="10" />
+
+                <rect x="6" y="68" width="26" height="26" />
+                <rect x="10" y="72" width="18" height="18" fill="#ffffff" />
+                <rect x="14" y="76" width="10" height="10" />
+
+                <rect x="40" y="8" width="8" height="8" />
+                <rect x="52" y="10" width="6" height="6" />
+                <rect x="44" y="22" width="10" height="10" />
+                <rect x="40" y="40" width="6" height="6" />
+                <rect x="50" y="40" width="8" height="8" />
+                <rect x="62" y="38" width="6" height="6" />
+                <rect x="38" y="52" width="12" height="6" />
+                <rect x="56" y="52" width="6" height="12" />
+                <rect x="70" y="52" width="8" height="8" />
+                <rect x="46" y="66" width="6" height="6" />
+                <rect x="58" y="70" width="10" height="10" />
+                <rect x="74" y="70" width="6" height="6" />
+                <rect x="40" y="80" width="8" height="8" />
+                <rect x="52" y="82" width="6" height="6" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    );
+
+    const imageConverterPreview = (
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">Image Converter</div>
+        <div className="flex-1 flex items-center gap-3">
+          <div className="flex-1 h-full rounded-xl bg-black/50 border border-gray-700 p-3">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-3 h-16 rounded-lg bg-white/5 border border-white/10" />
+            <div className="mt-3 h-2 w-2/3 rounded bg-white/10" />
+          </div>
+          <div className="w-10 h-10 rounded-full bg-white/10 border border-white/10" />
+          <div className="flex-1 h-full rounded-xl bg-black/50 border border-gray-700 p-3">
+            <div className="h-2 w-1/3 rounded bg-white/10" />
+            <div className="mt-3 h-16 rounded-lg bg-white/5 border border-white/10" />
+            <div className="mt-3 h-2 w-1/2 rounded bg-white/10" />
+          </div>
+        </div>
+        <div className="mt-3 h-9 w-32 rounded-lg bg-[#02D67D]" />
+      </div>
+    );
+
+    const urlShortenerPreview = (
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">URL Shortener</div>
+        <div className="h-9 w-full rounded-lg bg-black/50 border border-gray-700" />
+        <div className="mt-3 flex items-center gap-3">
+          <div className="h-9 w-32 rounded-lg bg-[#02D67D]" />
+          <div className="h-9 w-24 rounded-lg bg-white/10 border border-white/10" />
+        </div>
+        <div className="mt-4 rounded-xl bg-black/50 border border-gray-700 p-3">
+          <div className="h-2 w-1/3 rounded bg-white/10" />
+          <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+          <div className="mt-2 h-2 w-1/2 rounded bg-white/10" />
+        </div>
+      </div>
+    );
+
+    const pdfCompressorPreview = (
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">PDF Compressor</div>
+        <div className="flex-1 rounded-xl bg-black/50 border border-gray-700 p-4 flex items-center gap-4">
+          <div className="h-14 w-14 rounded-xl bg-white/10 border border-white/10" />
+          <div className="min-w-0 flex-1">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-2 w-full rounded bg-white/10 overflow-hidden">
+              <div className="h-full w-2/3 bg-[#02D67D]" />
+            </div>
+          </div>
+        </div>
+        <div className="mt-3 h-9 w-36 rounded-lg bg-[#02D67D]" />
+      </div>
+    );
+
+    const imageResizerPreview = (
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">Image Resizer</div>
+        <div className="flex-1 flex items-center gap-4">
+          <div className="h-full w-28 rounded-xl bg-white/5 border border-white/10" />
+          <div className="min-w-0 flex-1">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="h-9 rounded-lg bg-black/50 border border-gray-700" />
+              <div className="h-9 rounded-lg bg-black/50 border border-gray-700" />
+            </div>
+            <div className="mt-3 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-9 w-28 rounded-lg bg-[#02D67D]" />
+          </div>
+        </div>
+      </div>
+    );
+
+    const wordToPdfPreview = (
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">Word to PDF</div>
+        <div className="flex-1 rounded-xl bg-black/50 border border-gray-700 p-4 flex items-center justify-between">
+          <div className="w-1/3 rounded-xl bg-white/5 border border-white/10 p-3">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-8 rounded bg-white/10" />
+          </div>
+          <div className="h-10 w-10 rounded-full bg-white/10 border border-white/10" />
+          <div className="w-1/3 rounded-xl bg-white/5 border border-white/10 p-3">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-8 rounded bg-white/10" />
+          </div>
+        </div>
+        <div className="mt-3 h-9 w-32 rounded-lg bg-[#02D67D]" />
+      </div>
+    );
+
+    const pdfToWordPreview = (
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">PDF to Word</div>
+        <div className="flex-1 rounded-xl bg-black/50 border border-gray-700 p-4 flex items-center justify-between">
+          <div className="w-1/3 rounded-xl bg-white/5 border border-white/10 p-3">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-8 rounded bg-white/10" />
+          </div>
+          <div className="h-10 w-10 rounded-full bg-white/10 border border-white/10" />
+          <div className="w-1/3 rounded-xl bg-white/5 border border-white/10 p-3">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-8 rounded bg-white/10" />
+          </div>
+        </div>
+        <div className="mt-3 h-9 w-32 rounded-lg bg-[#02D67D]" />
+      </div>
+    );
+
+    if (tool.link === "/tools/image-converter") return wrap(imageConverterPreview);
+    if (tool.link === "/tools/url-shortener") return wrap(urlShortenerPreview);
+    if (tool.link === "/tools/qr-generator") return wrap(qrPreview);
+    if (tool.link === "/tools/pdf-compressor") return wrap(pdfCompressorPreview);
+    if (tool.link === "/tools/image-resizer") return wrap(imageResizerPreview);
+    if (tool.link === "/tools/word-to-pdf") return wrap(wordToPdfPreview);
+    if (tool.link === "/tools/pdf-to-word") return wrap(pdfToWordPreview);
+
+    return wrap(
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">{tool.title}</div>
+        <div className="flex-1 rounded-xl bg-black/50 border border-gray-700" />
+      </div>
+    );
+  };
+
   const tools = [
     {
       id: 1,
       title: "Image Converter",
       description: "Convert images between JPG, PNG, WEBP, and more instantly in your browser.",
-      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80", // Abstract digital layers
       link: "/tools/image-converter",
-      category: "Image",
     },
     {
       id: 2,
       title: "URL Shortener",
       description: "Transform long, ugly links into short, shareable URLs. Track clicks and manage links.",
-      image: "https://images.unsplash.com/photo-1555421689-d68471e189f2?auto=format&fit=crop&w=800&q=80", // Network/Link abstract
       link: "/tools/url-shortener",
-      category: "Utility",
     },
     {
       id: 3,
       title: "QR Code Generator",
       description: "Create custom QR codes for Wi-Fi, URLs, vCards, and more with your brand colors.",
-      image: "https://images.unsplash.com/photo-1595079676339-1534801fafde?auto=format&fit=crop&w=800&q=80", // Scanning QR Code
       link: "/tools/qr-generator",
-      category: "Utility",
     },
     {
       id: 4,
       title: "PDF Compressor",
       description: "Reduce file size while maintaining quality. Perfect for email attachments.",
-      image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80", // Stacks of paper/files
       link: "/tools/pdf-compressor",
-      category: "PDF",
     },
     {
       id: 5,
       title: "Image Resizer",
       description: "Resize images to specific dimensions or percentage without losing quality.",
-      image: "https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=800&q=80", // Design software UI
       link: "/tools/image-resizer",
-      category: "Image",
     },
     {
       id: 6,
       title: "Word to PDF",
       description: "Convert Microsoft Word documents (.docx) to professional PDF format securely.",
-      image: "https://images.unsplash.com/photo-1512314889357-e15a8c384c27?auto=format&fit=crop&w=800&q=80", // Laptop and notebook
       link: "/tools/word-to-pdf",
-      category: "PDF",
     },
     {
       id: 7,
       title: "PDF to Word",
       description: "Extract text and formatting from PDFs into editable Word documents.",
-      image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=800&q=80", // Writing/Paperwork
       link: "/tools/pdf-to-word",
-      category: "PDF",
     },
   ];
 
@@ -116,18 +287,7 @@ const ToolsContent = () => {
                 
                 {/* Image Container with Hover Zoom Effect */}
                 <div className="relative w-full h-48 overflow-hidden">
-                  <div className="absolute inset-0 bg-linear-to-t from-neutral-900 to-transparent z-10 opacity-60" />
-                  <Image
-                    src={tool.image}
-                    alt={tool.title}
-                    fill
-                    className="object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  {/* Category Badge */}
-                  <div className="absolute top-4 left-4 z-20 px-3 py-1 bg-black/60 backdrop-blur-md border border-white/10 rounded-full text-xs font-medium text-[#02D67D]">
-                    {tool.category}
-                  </div>
+                    {renderToolCardPreview(tool)}
                 </div>
 
                 {/* Content */}
@@ -160,7 +320,7 @@ const ToolsContent = () => {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-white">No tools found</h3>
-            <p className="text-gray-500 mt-2">We couldn&apos;t find any tools matching "{searchQuery}".</p>
+            <p className="text-gray-500 mt-2">We couldn&apos;t find any tools matching &quot;{searchQuery}&quot;.</p>
           </div>
         )}
 

@@ -11,11 +11,13 @@ const QRCodeContent = () => {
   const [fgColor, setFgColor] = useState("#000000"); // Foreground (Pixels)
   const [bgColor, setBgColor] = useState("#ffffff"); // Background
   const [size, setSize] = useState(256); // Size in pixels
-  const qrRef = useRef(null);
+  const qrRef = useRef<HTMLDivElement>(null);
 
   // Download Function
   const downloadQRCode = () => {
+    if (!qrRef.current) return;
     const canvas = qrRef.current.querySelector("canvas");
+    if (!canvas) return;
     const url = canvas.toDataURL("image/png");
     const anchor = document.createElement("a");
     anchor.href = url;

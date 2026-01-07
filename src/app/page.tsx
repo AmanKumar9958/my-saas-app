@@ -2,7 +2,171 @@
 
 import { BackgroundRippleEffect } from '@/components/ui/background-ripple-effect';
 import { SpotlightCard } from '@/components/ui/spotlight-card';
-import Image from 'next/image';
+
+const renderLandingToolPreview = (title: string) => {
+  const wrap = (children: React.ReactNode) => (
+    <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-linear-to-t from-neutral-900 to-transparent z-10 opacity-60" />
+      <div className="relative z-0 h-full w-full bg-black p-4">
+        <div className="h-full w-full rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm p-4">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+
+  if (title === "Image Converter") {
+    return wrap(
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">Image Converter</div>
+        <div className="flex-1 flex items-center gap-3">
+          <div className="flex-1 h-full rounded-xl bg-black/50 border border-gray-700 p-3">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-3 h-16 rounded-lg bg-white/5 border border-white/10" />
+            <div className="mt-3 h-2 w-2/3 rounded bg-white/10" />
+          </div>
+          <div className="w-10 h-10 rounded-full bg-white/10 border border-white/10" />
+          <div className="flex-1 h-full rounded-xl bg-black/50 border border-gray-700 p-3">
+            <div className="h-2 w-1/3 rounded bg-white/10" />
+            <div className="mt-3 h-16 rounded-lg bg-white/5 border border-white/10" />
+            <div className="mt-3 h-2 w-1/2 rounded bg-white/10" />
+          </div>
+        </div>
+        <div className="mt-3 h-9 w-32 rounded-lg bg-[#02D67D]" />
+      </div>
+    );
+  }
+
+  if (title === "URL Shortener") {
+    return wrap(
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">URL Shortener</div>
+        <div className="h-9 w-full rounded-lg bg-black/50 border border-gray-700" />
+        <div className="mt-3 flex items-center gap-3">
+          <div className="h-9 w-32 rounded-lg bg-[#02D67D]" />
+          <div className="h-9 w-24 rounded-lg bg-white/10 border border-white/10" />
+        </div>
+        <div className="mt-4 rounded-xl bg-black/50 border border-gray-700 p-3">
+          <div className="h-2 w-1/3 rounded bg-white/10" />
+          <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+          <div className="mt-2 h-2 w-1/2 rounded bg-white/10" />
+        </div>
+      </div>
+    );
+  }
+
+  if (title === "QR Code Generator") {
+    return wrap(
+      <div className="h-full w-full flex items-center gap-4">
+        <div className="min-w-0 flex-1">
+          <div className="text-xs font-semibold text-white/90 mb-2">QR Code Generator</div>
+          <div className="h-8 w-full rounded-lg bg-black/50 border border-gray-700" />
+          <div className="mt-3 h-2 w-2/3 rounded bg-white/10" />
+          <div className="mt-2 h-2 w-1/2 rounded bg-white/10" />
+          <div className="mt-4 h-9 w-32 rounded-lg bg-[#02D67D]" />
+        </div>
+
+        <div className="shrink-0">
+          <div className="h-24 w-24 rounded-xl bg-white p-2 shadow-lg">
+            <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden="true">
+              <rect width="100" height="100" fill="#ffffff" />
+              <g fill="#000000">
+                <rect x="6" y="6" width="26" height="26" />
+                <rect x="10" y="10" width="18" height="18" fill="#ffffff" />
+                <rect x="14" y="14" width="10" height="10" />
+
+                <rect x="68" y="6" width="26" height="26" />
+                <rect x="72" y="10" width="18" height="18" fill="#ffffff" />
+                <rect x="76" y="14" width="10" height="10" />
+
+                <rect x="6" y="68" width="26" height="26" />
+                <rect x="10" y="72" width="18" height="18" fill="#ffffff" />
+                <rect x="14" y="76" width="10" height="10" />
+
+                <rect x="40" y="8" width="8" height="8" />
+                <rect x="52" y="10" width="6" height="6" />
+                <rect x="44" y="22" width="10" height="10" />
+                <rect x="40" y="40" width="6" height="6" />
+                <rect x="50" y="40" width="8" height="8" />
+                <rect x="62" y="38" width="6" height="6" />
+                <rect x="38" y="52" width="12" height="6" />
+                <rect x="56" y="52" width="6" height="12" />
+                <rect x="70" y="52" width="8" height="8" />
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (title === "PDF Compressor") {
+    return wrap(
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">PDF Compressor</div>
+        <div className="flex-1 rounded-xl bg-black/50 border border-gray-700 p-4 flex items-center gap-4">
+          <div className="h-14 w-14 rounded-xl bg-white/10 border border-white/10" />
+          <div className="min-w-0 flex-1">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-2 w-full rounded bg-white/10 overflow-hidden">
+              <div className="h-full w-2/3 bg-[#02D67D]" />
+            </div>
+          </div>
+        </div>
+        <div className="mt-3 h-9 w-36 rounded-lg bg-[#02D67D]" />
+      </div>
+    );
+  }
+
+  if (title === "Image Resizer") {
+    return wrap(
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">Image Resizer</div>
+        <div className="flex-1 flex items-center gap-4">
+          <div className="h-full w-28 rounded-xl bg-white/5 border border-white/10" />
+          <div className="min-w-0 flex-1">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="h-9 rounded-lg bg-black/50 border border-gray-700" />
+              <div className="h-9 rounded-lg bg-black/50 border border-gray-700" />
+            </div>
+            <div className="mt-3 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-9 w-28 rounded-lg bg-[#02D67D]" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (title === "Word ↔ PDF") {
+    return wrap(
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">Word ↔ PDF</div>
+        <div className="flex-1 rounded-xl bg-black/50 border border-gray-700 p-4 flex items-center justify-between">
+          <div className="w-1/3 rounded-xl bg-white/5 border border-white/10 p-3">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-8 rounded bg-white/10" />
+          </div>
+          <div className="h-10 w-10 rounded-full bg-white/10 border border-white/10" />
+          <div className="w-1/3 rounded-xl bg-white/5 border border-white/10 p-3">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-8 rounded bg-white/10" />
+          </div>
+        </div>
+        <div className="mt-3 h-9 w-32 rounded-lg bg-[#02D67D]" />
+      </div>
+    );
+  }
+
+  return wrap(
+    <div className="h-full w-full flex flex-col">
+      <div className="text-xs font-semibold text-white/90 mb-3">{title}</div>
+      <div className="flex-1 rounded-xl bg-black/50 border border-gray-700" />
+    </div>
+  );
+};
 
 const HomePage = () => {
   return (
@@ -26,43 +190,31 @@ const HomePage = () => {
               {
                 title: "Image Converter",
                 description: "Convert images between various formats including JPG ↔ PNG ↔ WEBP with ease.",
-                image: "https://plus.unsplash.com/premium_photo-1726079248086-ad6bec853f36?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2UlMjBjb252ZXJ0ZXIlMjB3ZWJzaXRlfGVufDB8fDB8fHww"
               },
               {
                 title: "URL Shortener",
                 description: "Shorten long URLs into compact, shareable links with tracking and analytics features.",
-                image: "https://images.unsplash.com/photo-1749877217773-6c844c38c874?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fFVSTCUyMHNob3J0bmVyJTIwd2Vic2l0ZXxlbnwwfHwwfHx8MA%3D%3D"
               },
               {
                 title: "QR Code Generator",
                 description: "Generate QR codes for URLs, text, and other data with customizable designs and sizes.",
-                image: "https://plus.unsplash.com/premium_photo-1669244777130-3f78aca168a7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fFVSTCUyMHNob3J0bmVyJTIwd2Vic2l0ZXxlbnwwfHwwfHx8MA%3D%3D"
               },
               {
                 title: "PDF Compressor",
                 description: "Reduce the file size of your PDF documents without compromising quality for easier sharing.",
-                image: "https://plus.unsplash.com/premium_photo-1669244777130-3f78aca168a7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fFVSTCUyMHNob3J0bmVyJTIwd2Vic2l0ZXxlbnwwfHwwfHx8MA%3D%3D"
               },
               {
                 title: "Image Resizer",
                 description: "Resize images to specific dimensions or optimize them for web use quickly and efficiently.",
-                image: "https://plus.unsplash.com/premium_photo-1669244777130-3f78aca168a7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fFVSTCUyMHNob3J0bmVyJTIwd2Vic2l0ZXxlbnwwfHwwfHx8MA%3D%3D"
               },
               {
                 title: "Word ↔ PDF",
                 description: "Convert ",
-                image: "https://plus.unsplash.com/premium_photo-1669244777130-3f78aca168a7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fFVSTCUyMHNob3J0bmVyJTIwd2Vic2l0ZXxlbnwwfHwwfHx8MA%3D%3D"
               },
             ].map((feature, index) => (
               <SpotlightCard key={index} className="p-6 bg-white/5 backdrop-blur-sm border border-neutral-200 rounded-2xl hover:border-[#02D67D]/50 hover:cursor-default flex flex-col hover:scale-105 transform transition-transform duration-300">
                 <div className="relative w-full h-48 mb-6 rounded-xl overflow-hidden group">
-                    <Image
-                      src={feature.image}
-                      alt={feature.title}
-                      fill
-                      className="object-cover transform group-hover:scale-110 transition-transform duration-500"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
+                    {renderLandingToolPreview(feature.title)}
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-[#02D67D]">{feature.title}</h3>
                 <p className="text-white leading-relaxed">
