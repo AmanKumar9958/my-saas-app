@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'img.clerk.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'plus.unsplash.com',
       },
       {
@@ -19,7 +23,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'ai-saas-template-aceternity.vercel.app',
+        hostname: 'img.clerk.com',
       },
     ],
   },

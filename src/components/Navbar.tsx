@@ -1,32 +1,181 @@
 "use client"
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import { RxHamburgerMenu } from "react-icons/rx";
-import { RxCross1 } from "react-icons/rx";import { motion, AnimatePresence } from "motion/react";
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
+import { RxCross1 } from "react-icons/rx";
+import { motion, AnimatePresence } from "motion/react";
+import { SignedIn, SignedOut, SignInButton, UserButton, useClerk, useUser } from '@clerk/nextjs'
+
+const NAV_LINKS = [
+    { name: 'Home', href: '/' },
+    { name: 'Tools', href: '/tools' },
+    { name: 'Pricing', href: "/pricing" },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' },
+] as const;
+
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
+    const { openSignIn } = useClerk();
+    const { isSignedIn, isLoaded } = useUser();
+    const router = useRouter();
+    const pendingRedirectRef = useRef<string | null>(null);
 
-    const navLinks = [
-        { name: 'Home', href: '/' },
-        { name: 'Tools', href: '/tools'},
-        { name: 'Pricing', href: "/pricing"},
-        { name: 'About', href: '/about' },
-        { name: 'Contact', href: '/contact' },
-    ];
+    const getCookieValue = (name: string) => {
+        const cookie = `; ${document.cookie}`;
+        const parts = cookie.split(`; ${name}=`);
+        if (parts.length === 2) {
+            return parts.pop()?.split(';').shift() ?? null;
+        }
+        return null;
+    };
 
-    const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
-    const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+    const clearCookie = (name: string) => {
+        document.cookie = `${name}=; path=/; max-age=0; samesite=lax`;
+    };
+
+    const handleProtectedNav = (e: React.MouseEvent, href: string, closeMobileMenu?: boolean) => {
+        const isProtected = href.startsWith('/tools') || href.startsWith('/user-dashboard') || href.startsWith('/account');
+        if (!isProtected) {
+            if (closeMobileMenu) {
+                setIsOpen(false);
+            }
+            return;
+        }
+
+        if (!isLoaded) {
+            e.preventDefault();
+            return;
+        }
+
+        if (!isSignedIn) {
+            e.preventDefault();
+
+            try {
+                sessionStorage.setItem('postLoginRedirect', href);
+            } catch {
+                // ignore
+            }
+
+            openSignIn({
+                afterSignInUrl: href,
+                afterSignUpUrl: href,
+            });
+
+            if (closeMobileMenu) {
+                setIsOpen(false);
+            }
+            return;
+        }
+
+        if (closeMobileMenu) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!isLoaded) {
+            return;
+        }
+
+        const showLoginCookie = getCookieValue("showLogin") === "true";
+        const redirectCookie = getCookieValue("postLoginRedirect");
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const showLoginQuery = urlParams.get("login") === "true";
+        const redirectQuery = urlParams.get("redirect");
+
+        if (!showLoginCookie && !showLoginQuery) {
+            return;
+        }
+
+        const destination = (() => {
+            if (redirectCookie) {
+                return decodeURIComponent(redirectCookie);
+            }
+            if (redirectQuery) {
+                return redirectQuery;
+            }
+            return "/";
+        })();
+
+        // Clean URL immediately.
+        router.replace("/");
+
+        // Clear cookies ASAP so refreshes don't retrigger.
+        clearCookie("showLogin");
+        clearCookie("postLoginRedirect");
+
+        try {
+            sessionStorage.setItem("postLoginRedirect", destination);
+        } catch {
+            // ignore
+        }
+
+        if (!isSignedIn) {
+            pendingRedirectRef.current = destination;
+            openSignIn({
+                afterSignInUrl: destination,
+                afterSignUpUrl: destination,
+            });
+            return;
+        }
+
+        router.replace(destination);
+        router.refresh();
+    }, [isLoaded, isSignedIn, openSignIn, router]);
+
+    useEffect(() => {
+        if (!isLoaded || !isSignedIn) {
+            return;
+        }
+
+        try {
+            const stored = sessionStorage.getItem("postLoginRedirect");
+            if (stored) {
+                sessionStorage.removeItem("postLoginRedirect");
+                router.replace(stored);
+                router.refresh();
+                return;
+            }
+        } catch {
+            // ignore
+        }
+
+        if (pendingRedirectRef.current) {
+            const destination = pendingRedirectRef.current;
+            pendingRedirectRef.current = null;
+            router.replace(destination);
+            router.refresh();
+        }
+    }, [isLoaded, isSignedIn, router]);
+
+    const pillRef = useRef<HTMLDivElement | null>(null);
+    const linkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
     const [isCompact, setIsCompact] = useState(false);
     const lastScrollY = useRef(0);
 
+    const activeHref = (() => {
+        if (!pathname) {
+            return '/';
+        }
+
+        if (pathname === '/') {
+            return '/';
+        }
+
+        // Match nested routes (e.g. /tools/qr-generator -> /tools)
+        const prefixMatch = NAV_LINKS.find(link => link.href !== '/' && pathname.startsWith(link.href));
+        return prefixMatch?.href ?? pathname;
+    })();
+
+    // Scroll Logic
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
-            
             if (currentScrollY < 20) {
                 setIsCompact(false);
             } else if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
@@ -36,58 +185,59 @@ const Navbar = () => {
             }
             lastScrollY.current = currentScrollY;
         };
-
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Pill Animation Logic
     useEffect(() => {
-        const activeIndex = navLinks.findIndex(link => link.href === pathname);
-        if (activeIndex !== -1 && linkRefs.current[activeIndex]) {
-            const element = linkRefs.current[activeIndex];
-            setPillStyle({
-                left: element.offsetLeft,
-                width: element.offsetWidth,
-                opacity: 1
-            });
-        } else {
-            setPillStyle(prev => ({ ...prev, opacity: 0 }));
+        const activeIndex = NAV_LINKS.findIndex(link => link.href === activeHref);
+        const element = linkRefs.current[activeIndex] ?? null;
+        const pill = pillRef.current;
+        if (!pill) {
+            return;
         }
-    }, [pathname, isCompact]);
+
+        if (activeIndex !== -1 && element) {
+            pill.style.left = `${element.offsetLeft}px`;
+            pill.style.width = `${element.offsetWidth}px`;
+            pill.style.opacity = '1';
+        } else {
+            pill.style.opacity = '0';
+        }
+    }, [activeHref, isCompact]);
 
     return (
         <div className="fixed top-0 w-full z-50 transition-all duration-300">
             <nav className={`bg-gray-900 h-14 flex items-center px-6 shadow-md rounded-3xl mx-auto mt-5 justify-between transition-all duration-500 ease-in-out ${isCompact ? 'w-11/12 md:w-112.5' : 'w-11/12'}`}>
-                {/* logo */}
+                
+                {/* Logo */}
                 <div>
-                    {/* <h1 className='text-2xl font-bold text-(--text-color)'>OmniTools</h1> */}
                     <Image src="/logo.png" alt="OmniTools Logo" width={80} height={30} className='w-8' />
                 </div>
-                {/* desktop navigation links */}
+
+                {/* Desktop Navigation */}
                 <div className={`hidden md:flex relative items-center transition-all duration-300 ease-in-out ${isCompact ? 'w-0 opacity-0 overflow-hidden scale-95' : 'w-auto opacity-100 scale-100'}`}>
                     <div 
+                        ref={pillRef}
                         className='absolute bg-[#02D67D] rounded-2xl transition-all duration-300 ease-in-out'
-                        style={{ 
-                            left: pillStyle.left, 
-                            width: pillStyle.width, 
-                            opacity: pillStyle.opacity,
-                            height: '32px'
-                        }}
+                        style={{ height: '32px', opacity: 0 }}
                     />
-                    {navLinks.map((link, index) => (
+                    {NAV_LINKS.map((link, index) => (
                         <Link 
                             key={link.href}
                             href={link.href}
                             ref={el => { linkRefs.current[index] = el }}
-                            className={`mx-4 px-3 py-1.5 relative z-10 transition-colors duration-200 hover:cursor-pointer ${pathname === link.href ? 'text-black font-bold' : 'text-(--text-color) hover:text-[#079258]'}`}
+                            onClick={(e) => handleProtectedNav(e, link.href)}
+                            className={`mx-4 px-3 py-1.5 relative z-10 transition-colors duration-200 hover:cursor-pointer ${activeHref === link.href ? 'text-black font-bold' : 'text-gray-300 hover:text-[#079258]'}`}
                         >
                             {link.name}
                         </Link>
                     ))}
                 </div>
-                {/* Buttons */}
+
+                {/* Desktop Auth Buttons */}
                 <div className='hidden md:flex'>
-                    {/* Show this if user is NOT logged in */}
                     <SignedOut>
                         <SignInButton mode="modal">
                             <button className="bg-(--text-color) hover:bg-[#0B3A1E] hover:cursor-pointer text-black hover:text-white transition-all duration-200 px-4 py-2 rounded-full font-bold">
@@ -96,19 +246,17 @@ const Navbar = () => {
                         </SignInButton>
                     </SignedOut>
 
-                    {/* Show this if user IS logged in */}
                     <SignedIn>
                         <div className='flex items-center space-x-4'>
-                            <Link href="/dashboard" className="text-gray-300 hover:text-white">
+                            <Link href="/user-dashboard" className="text-(--text-color) hover:text-(--para-color) font-semibold transition-all duration-200">
                                 Dashboard
                             </Link>
-                            {/* This is the circle avatar with logout dropdown */}
                             <UserButton afterSignOutUrl="/" />
                         </div>
                     </SignedIn>
                 </div>
 
-                {/* hamburger icon */}
+                {/* Hamburger Icon */}
                 <div className='block md:hidden'>
                     <AnimatePresence mode="wait" initial={false}>
                         {isOpen ? (
@@ -135,15 +283,37 @@ const Navbar = () => {
                     </AnimatePresence>
                 </div>
 
-                {/* mobile menu */}
-                <div className={`absolute top-20 left-0 w-full bg-white shadow-md flex flex-col items-center md:hidden rounded-3xl overflow-hidden transition-all duration-300 ease-in-out z-999 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}`}>
-                    <Link href='/' className={`w-full text-center py-3 border-b border-gray-200 transition-all duration-200 hover:cursor-pointer ${pathname === '/' ? 'bg-[#02D67D] text-black font-bold' : 'text-gray-700 hover:bg-gray-100'}`}>Home</Link>
-                    <Link href='/tools' className={`w-full text-center py-3 border-b border-gray-200 transition-all duration-200 hover:cursor-pointer ${pathname === '/tools' ? 'bg-[#02D67D] text-black font-bold' : 'text-gray-700 hover:bg-gray-100'}`}>Tools</Link>
-                    <Link href='/tools' className={`w-full text-center py-3 border-b border-gray-200 transition-all duration-200 hover:cursor-pointer ${pathname === '/pricing' ? 'bg-[#02D67D] text-black font-bold' : 'text-gray-700 hover:bg-gray-100'}`}>Pricing</Link>
-                    <Link href='/about' className={`w-full text-center py-3 border-b border-gray-200 transition-all duration-200 hover:cursor-pointer ${pathname === '/about' ? 'bg-[#02D67D] text-black font-bold' : 'text-gray-700 hover:bg-gray-100'}`}>About</Link>
-                    <Link href='/contact' className={`w-full text-center py-3 border-b border-gray-200 transition-all duration-200 hover:cursor-pointer ${pathname === '/contact' ? 'bg-[#02D67D] text-black font-bold' : 'text-gray-700 hover:bg-gray-100'}`}>Contact</Link>
-                    <button className='w-11/12 my-2 px-4 py-2 bg-black text-white font-bold hover:bg-gray-800 rounded-4xl transition-all duration-200 hover:cursor-pointer'>Login</button>
-                    <button className='w-11/12 my-2 px-4 py-2 text-black rounded-4xl font-bold hover:bg-gray-200 transition-all duration-200 hover:cursor-pointer'>Sign Up</button>
+                {/* Mobile Menu */}
+                <div className={`absolute top-20 left-0 w-full bg-white shadow-md flex flex-col items-center md:hidden rounded-3xl overflow-hidden transition-all duration-300 ease-in-out z-50 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10 pointer-events-none'}`}>
+                    {NAV_LINKS.map((link) => (
+                        <Link 
+                            key={link.href}
+                            href={link.href} 
+                            onClick={(e) => handleProtectedNav(e, link.href, true)}
+                            className={`w-full text-center py-3 border-b border-gray-200 transition-all duration-200 hover:cursor-pointer ${activeHref === link.href ? 'bg-[#02D67D] text-black font-bold' : 'text-gray-700 hover:bg-gray-100'}`}
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                    
+                    <div className="w-full flex flex-col items-center py-4 gap-2">
+                        <SignedOut>
+                            <SignInButton mode="modal">
+                                <button className='w-11/12 px-4 py-2 bg-black text-white font-bold hover:bg-gray-800 rounded-full transition-all duration-200'>
+                                    Log In / Sign Up
+                                </button>
+                            </SignInButton>
+                        </SignedOut>
+
+                        <SignedIn>
+                            <Link href="/user-dashboard" onClick={() => setIsOpen(false)} className='w-11/12 text-center px-4 py-2 bg-gray-100 text-black font-bold hover:bg-gray-200 rounded-full mb-2'>
+                                Go to Dashboard
+                            </Link>
+                            <div className="mt-2">
+                                <UserButton afterSignOutUrl="/" />
+                            </div>
+                        </SignedIn>
+                    </div>
                 </div>
             </nav>
         </div>

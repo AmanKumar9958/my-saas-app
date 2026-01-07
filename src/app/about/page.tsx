@@ -86,7 +86,7 @@ const AboutPage = () => {
                 <div className="absolute inset-0 flex items-center justify-center bg-neutral-900 text-gray-500">
                    {/* Placeholder for Image */}
                     <Image
-                      src="https://ai-saas-template-aceternity.vercel.app/_next/image?url=%2Fheader.png&w=3840&q=75"
+                      src="/landing.png"
                       alt="Coding or Dashboard Screenshot"
                       fill
                       className="object-cover transform group-hover:scale-105 transition-transform duration-500"

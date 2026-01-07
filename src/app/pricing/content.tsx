@@ -51,9 +51,6 @@ const PricingContent = () => {
         
         {/* ----------------- HEADER ----------------- */}
         <div className="text-center mb-16">
-          <h2 className="text-[#02D67D] font-bold tracking-wide uppercase text-sm mb-4">
-            Pricing Plans
-          </h2>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-(--text-color) mb-6">
             Simple, transparent pricing.
           </h1>
