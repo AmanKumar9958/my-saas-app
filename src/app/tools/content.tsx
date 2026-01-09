@@ -198,7 +198,7 @@ const ToolsContent = () => {
     {
       id: 1,
       title: "Image Converter",
-      description: "Convert images between JPG, PNG, WEBP, and more instantly in your browser.",
+      description: "Convert images between JPEG, PNG, WEBP, and more instantly in your browser.",
       link: "/tools/image-converter",
     },
     {
