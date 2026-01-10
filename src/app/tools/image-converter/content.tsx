@@ -111,11 +111,8 @@ const ImageConverterContent = () => {
       <div className="relative z-10 w-full max-w-5xl mx-auto px-6 md:px-12 pt-32 pb-20">
         
         {/* HEADER */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-[#02D67D]/10 text-[#02D67D] border border-[#02D67D]/20">
-            <FaImage className="text-3xl" />
-          </div>
-          <h1 className="text-4xl font-bold mb-4">Image Converter</h1>
+        <div className="text-center mb-16">
+          <h1 className="md:text-5xl font-bold mb-4 text-(--text-color)">Image Converter</h1>
           <p className="text-gray-400">Convert JPEG, PNG, WEBP, and more securely in your browser.</p>
         </div>
 
