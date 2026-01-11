@@ -2,6 +2,7 @@
 
 import { BackgroundRippleEffect } from '@/components/ui/background-ripple-effect';
 import { SpotlightCard } from '@/components/ui/spotlight-card';
+import Link from 'next/link';
 
 const renderLandingToolPreview = (title: string) => {
   const wrap = (children: React.ReactNode) => (
@@ -280,7 +281,7 @@ const HomePage = () => {
             Join thousands of developers who trust OmniTools for their daily tasks. Start using our premium tools for free.
           </p>
           <button className="px-8 py-4 bg-[#02D67D] text-black font-bold rounded-full hover:bg-[#02b86b] transition-all duration-200 transform hover:scale-105 shadow-lg shadow-[#02D67D]/20 hover:cursor-pointer">
-            Explore All Tools
+            <Link href="/tools">Explore All Tools</Link>
           </button>
         </div>
       </div>

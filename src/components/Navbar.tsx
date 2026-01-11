@@ -16,6 +16,49 @@ const NAV_LINKS = [
     { name: 'Contact', href: '/contact' },
 ] as const;
 
+const isAbsoluteUrl = (value: string) => /^https?:\/\//i.test(value);
+
+const decodeRepeatedly = (raw: string) => {
+    let current = raw;
+    for (let i = 0; i < 3; i += 1) {
+        try {
+            const next = decodeURIComponent(current);
+            if (next === current) {
+                break;
+            }
+            current = next;
+        } catch {
+            break;
+        }
+    }
+    return current;
+};
+
+const normalizeDestination = (value?: string | null) => {
+    if (!value) {
+        return null;
+    }
+
+    const trimmed = value.trim();
+    if (!trimmed) {
+        return null;
+    }
+
+    if (isAbsoluteUrl(trimmed)) {
+        return trimmed;
+    }
+
+    const withoutLeadingSlashes = trimmed.replace(/^\/+/, '');
+    const decoded = decodeRepeatedly(withoutLeadingSlashes);
+
+    if (isAbsoluteUrl(decoded)) {
+        return decoded;
+    }
+
+    const cleaned = decoded.replace(/^\/+/, '');
+    return cleaned ? `/${cleaned}` : '/';
+};
+
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
@@ -54,15 +97,17 @@ const Navbar = () => {
         if (!isSignedIn) {
             e.preventDefault();
 
+            const safeHref = normalizeDestination(href) ?? href;
+
             try {
-                sessionStorage.setItem('postLoginRedirect', href);
+                sessionStorage.setItem('postLoginRedirect', safeHref);
             } catch {
                 // ignore
             }
 
             openSignIn({
-                afterSignInUrl: href,
-                afterSignUpUrl: href,
+                afterSignInUrl: safeHref,
+                afterSignUpUrl: safeHref,
             });
 
             if (closeMobileMenu) {
@@ -94,10 +139,10 @@ const Navbar = () => {
 
         const destination = (() => {
             if (redirectCookie) {
-                return decodeURIComponent(redirectCookie);
+                return normalizeDestination(redirectCookie) ?? "/";
             }
             if (redirectQuery) {
-                return redirectQuery;
+                return normalizeDestination(redirectQuery) ?? "/";
             }
             return "/";
         })();
@@ -137,8 +182,11 @@ const Navbar = () => {
             const stored = sessionStorage.getItem("postLoginRedirect");
             if (stored) {
                 sessionStorage.removeItem("postLoginRedirect");
-                router.replace(stored);
-                router.refresh();
+                const destination = normalizeDestination(stored);
+                if (destination) {
+                    router.replace(destination);
+                    router.refresh();
+                }
                 return;
             }
         } catch {
@@ -146,10 +194,12 @@ const Navbar = () => {
         }
 
         if (pendingRedirectRef.current) {
-            const destination = pendingRedirectRef.current;
+            const destination = normalizeDestination(pendingRedirectRef.current) ?? null;
             pendingRedirectRef.current = null;
-            router.replace(destination);
-            router.refresh();
+            if (destination) {
+                router.replace(destination);
+                router.refresh();
+            }
         }
     }, [isLoaded, isSignedIn, router]);
 
