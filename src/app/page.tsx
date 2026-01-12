@@ -210,7 +210,7 @@ const HomePage = () => {
               },
               {
                 title: "Word ↔ PDF",
-                description: "Convert ",
+                description: "Convert Word documents to PDF format and vice versa while preserving formatting.",
               },
             ].map((feature, index) => (
               <SpotlightCard key={index} className="p-6 bg-white/5 backdrop-blur-sm border border-neutral-200 rounded-2xl hover:border-[#02D67D]/50 hover:cursor-default flex flex-col hover:scale-105 transform transition-transform duration-300">

@@ -178,6 +178,21 @@ const ToolsContent = () => {
       </div>
     );
 
+    const imageToPdfPreview = (
+      <div className="h-full w-full flex flex-col">
+        <div className="text-xs font-semibold text-white/90 mb-3">Image to PDF</div>
+        <div className="flex-1 rounded-xl bg-black/50 border border-gray-700 p-4 flex items-center gap-4">
+          <div className="h-14 w-14 rounded-xl bg-white/10 border border-white/10" />
+          <div className="min-w-0 flex-1">
+            <div className="h-2 w-1/2 rounded bg-white/10" />
+            <div className="mt-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mt-4 h-8 rounded bg-white/10" />
+          </div>
+        </div>
+        <div className="mt-3 h-9 w-36 rounded-lg bg-[#02D67D]" />
+      </div>
+    );
+
     if (tool.link === "/tools/image-converter") return wrap(imageConverterPreview);
     if (tool.link === "/tools/url-shortener") return wrap(urlShortenerPreview);
     if (tool.link === "/tools/qr-generator") return wrap(qrPreview);
@@ -185,6 +200,7 @@ const ToolsContent = () => {
     if (tool.link === "/tools/image-resizer") return wrap(imageResizerPreview);
     if (tool.link === "/tools/word-to-pdf") return wrap(wordToPdfPreview);
     if (tool.link === "/tools/pdf-to-word") return wrap(pdfToWordPreview);
+    if (tool.link === "/tools/image-to-pdf") return wrap(imageToPdfPreview);
 
     return wrap(
       <div className="h-full w-full flex flex-col">
@@ -237,6 +253,12 @@ const ToolsContent = () => {
       description: "Extract text and formatting from PDFs into editable Word documents.",
       link: "/tools/pdf-to-word",
     },
+    {
+      id: 8,
+      title: "Image to PDF",
+      description: "Combine multiple images into a single PDF file quickly and easily.",
+      link: "/tools/image-to-pdf",
+    }
   ];
 
   // Filter tools based on search
